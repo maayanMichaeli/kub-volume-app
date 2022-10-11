@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <label for="user">Add User:</label>
+    <input type="text" name="user" id="user">
+    <button id="button">Add</button>
+
+    <ul id="list"></ul>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const res = await fetch('http://localhost:5000/users')
+            const text = await res.text()
+            const list = document.getElementById('list')
+            const names = text.split('\n')
+            for (const name of names) {
+                const li = document.createElement('li')
+                li.innerHTML = name
+                list.appendChild(li)
+            }
+
+            const button = document.getElementById('button')
+            button.addEventListener('click', async () => {
+                const inp = document.getElementById('user')
+                const res = await fetch('http://localhost:5000/users', {
+                    method: 'POST',
+                    body: JSON.stringify({ user: inp.value }),
+                    headers: { "Content-Type": "application/json" }
+                })
+                const text = await res.text()
+
+                const list = document.getElementById('list')
+                list.innerHTML = ''
+                const names = text.split('\n')
+                for (const name of names) {
+                    const li = document.createElement('li')
+                    li.innerHTML = name
+                    list.appendChild(li)
+                }
+
+                // console.log({ res: await res.text() });
+
+                if (res) {
+                    alert('user added!')
+                }
+            })
+        })
+    </script>
+
+</body>
+
+</html>
